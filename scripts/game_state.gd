@@ -93,6 +93,11 @@ func place_crow(point_id: String) -> bool:
 		phase = Phase.MOVEMENT
 		turn = Turn.VULTURE
 
+		# The seventh crow may trap the vulture immediately.
+		# Once placement is complete, check whether the vulture
+		# has either a normal move or a legal capture.
+		check_crow_victory()
+
 	state_changed.emit()
 
 	return true
