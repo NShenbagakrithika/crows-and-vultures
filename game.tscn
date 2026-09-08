@@ -1,0 +1,300 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" uid="uid://dy4bjuj1w5yb1" path="res://scripts/board.gd" id="1_board"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="2_ui"]
+[ext_resource type="Script" path="res://scripts/capture_pips.gd" id="3_pips"]
+[ext_resource type="Script" path="res://scripts/background_controller.gd" id="4_bg"]
+[ext_resource type="Script" path="res://scripts/motif_divider.gd" id="5_motif"]
+
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+bg_color = Color(0.14, 0.10, 0.09, 0.94)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.65, 0.25, 0.35)
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="btn_normal"]
+bg_color = Color(1, 1, 1, 0.06)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.65, 0.25, 0.25)
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="btn_hover"]
+bg_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.65, 0.25, 0.4)
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="btn_pressed"]
+bg_color = Color(1, 1, 1, 0.18)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="primary_normal"]
+bg_color = Color(0.68, 0.42, 0.08, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="primary_hover"]
+bg_color = Color(0.82, 0.53, 0.12, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="primary_pressed"]
+bg_color = Color(0.52, 0.32, 0.06, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+
+[node name="Game" type="Node2D"]
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="BackgroundRect" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.07, 0.09, 0.19, 1)
+script = ExtResource("4_bg")
+
+[node name="Board" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(12, 0)
+script = ExtResource("1_board")
+
+[node name="AITimer" type="Timer" parent="Board"]
+one_shot = true
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="UI" type="Control" parent="UILayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_ui")
+
+[node name="TopBar" type="HBoxContainer" parent="UILayer/UI"]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 220.0
+offset_bottom = 56.0
+theme_override_constants/separation = 10
+
+[node name="MenuButton" type="Button" parent="UILayer/UI/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/pressed = SubResource("btn_pressed")
+theme_override_styles/focus = SubResource("btn_normal")
+theme_override_colors/font_color = Color(1, 0.95, 0.88, 0.9)
+text = "☰ Menu"
+
+[node name="RestartButton" type="Button" parent="UILayer/UI/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/pressed = SubResource("btn_pressed")
+theme_override_styles/focus = SubResource("btn_normal")
+theme_override_colors/font_color = Color(1, 0.95, 0.88, 0.9)
+text = "⟲ Restart"
+
+[node name="StatusPanel" type="PanelContainer" parent="UILayer/UI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -290.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 264.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("panel_style")
+
+[node name="StatusMargin" type="MarginContainer" parent="UILayer/UI/StatusPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="StatusVBox" type="VBoxContainer" parent="UILayer/UI/StatusPanel/StatusMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ModeLabel" type="Label" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Human vs Human"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.9, 0.8, 0.55)
+
+[node name="TurnLabel" type="Label" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Turn: Crows"
+theme_override_font_sizes/font_size = 24
+
+[node name="AIThinkingLabel" type="Label" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "AI is thinking…"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.9, 0.8, 0.55)
+
+[node name="PhaseLabel" type="Label" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Phase: Placement"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 0.95, 0.9, 0.75)
+
+[node name="Divider" type="Control" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+script = ExtResource("5_motif")
+
+[node name="CrowsLabel" type="Label" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Crows placed: 0 / 7"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(1, 0.95, 0.9, 0.75)
+
+[node name="CapturedLabel" type="Label" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Crows captured: 0 / 4"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(1, 0.95, 0.9, 0.75)
+
+[node name="CapturePips" type="Control" parent="UILayer/UI/StatusPanel/StatusMargin/StatusVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+script = ExtResource("3_pips")
+
+[node name="GameOverPanel" type="PanelContainer" parent="UILayer/UI"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -110.0
+offset_right = 190.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("panel_style")
+
+[node name="GameOverMargin" type="MarginContainer" parent="UILayer/UI/GameOverPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 26
+
+[node name="GameOverVBox" type="VBoxContainer" parent="UILayer/UI/GameOverPanel/GameOverMargin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="WinnerLabel" type="Label" parent="UILayer/UI/GameOverPanel/GameOverMargin/GameOverVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Game Over"
+horizontal_alignment = 1
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 26
+
+[node name="ButtonRow" type="HBoxContainer" parent="UILayer/UI/GameOverPanel/GameOverMargin/GameOverVBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="RematchButton" type="Button" parent="UILayer/UI/GameOverPanel/GameOverMargin/GameOverVBox/ButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("primary_normal")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/pressed = SubResource("primary_pressed")
+theme_override_styles/focus = SubResource("primary_normal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Play Again"
+
+[node name="MainMenuButton" type="Button" parent="UILayer/UI/GameOverPanel/GameOverMargin/GameOverVBox/ButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/pressed = SubResource("btn_pressed")
+theme_override_styles/focus = SubResource("btn_normal")
+theme_override_colors/font_color = Color(1, 0.95, 0.88, 0.9)
+text = "Main Menu"

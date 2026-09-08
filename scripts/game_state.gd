@@ -21,6 +21,12 @@ enum Winner {
 }
 
 
+# Emitted any time the logical state changes (placement, movement,
+# capture, or game over). The Board/UI listen to this instead of
+# polling every frame.
+signal state_changed
+
+
 var phase: Phase = Phase.PLACEMENT
 var turn: Turn = Turn.CROWS
 
@@ -41,6 +47,24 @@ func _init() -> void:
 
 func is_empty(point_id: String) -> bool:
 	return board.get(point_id, "") == ""
+
+
+# Returns an independent copy of this state. Used by the AI to try
+# out hypothetical moves without touching the live game and without
+# firing state_changed for every dead-end it explores.
+func clone() -> GameState:
+	var copy := GameState.new()
+
+	copy.phase = phase
+	copy.turn = turn
+	copy.board = board.duplicate()
+	copy.crows_placed = crows_placed
+	copy.captured_crows = captured_crows
+	copy.vulture_position = vulture_position
+	copy.game_over = game_over
+	copy.winner = winner
+
+	return copy
 
 
 func place_crow(point_id: String) -> bool:
@@ -69,6 +93,13 @@ func place_crow(point_id: String) -> bool:
 		phase = Phase.MOVEMENT
 		turn = Turn.VULTURE
 
+		# The seventh crow may trap the vulture immediately.
+		# Once placement is complete, check whether the vulture
+		# has either a normal move or a legal capture.
+		check_crow_victory()
+
+	state_changed.emit()
+
 	return true
 
 
@@ -92,6 +123,8 @@ func place_vulture(point_id: String) -> bool:
 	vulture_position = point_id
 
 	turn = Turn.CROWS
+
+	state_changed.emit()
 
 	return true
 
@@ -122,6 +155,8 @@ func move_vulture(destination: String) -> bool:
 
 	vulture_position = destination
 	turn = Turn.CROWS
+
+	state_changed.emit()
 
 	return true
 
@@ -195,9 +230,12 @@ func capture_with_vulture(destination: String) -> bool:
 	if captured_crows >= 4:
 		game_over = true
 		winner = Winner.VULTURE
+		state_changed.emit()
 		return true
 
 	turn = Turn.CROWS
+
+	state_changed.emit()
 
 	return true
 
@@ -227,6 +265,8 @@ func move_crow(origin: String, destination: String) -> bool:
 	turn = Turn.VULTURE
 
 	check_crow_victory()
+
+	state_changed.emit()
 
 	return true
 
