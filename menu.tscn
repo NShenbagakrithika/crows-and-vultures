@@ -1,119 +1,120 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene format=3 uid="uid://t5qv13m0j2ab"]
 
-[ext_resource type="Script" path="res://scripts/menu.gd" id="1_menu"]
-[ext_resource type="Script" path="res://scripts/motif_divider.gd" id="2_motif"]
+[ext_resource type="Script" uid="uid://cleq7j7ajhu4" path="res://scripts/menu.gd" id="1_menu"]
+[ext_resource type="Script" uid="uid://d3in6kb54lyfr" path="res://scripts/motif_divider.gd" id="2_motif"]
 
 [sub_resource type="StyleBoxFlat" id="panel_style"]
-bg_color = Color(0.14, 0.10, 0.09, 0.94)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+bg_color = Color(0.14, 0.1, 0.09, 0.94)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.85, 0.65, 0.25, 0.35)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 shadow_color = Color(0, 0, 0, 0.45)
 shadow_size = 20
 
-[sub_resource type="StyleBoxFlat" id="btn_normal"]
-bg_color = Color(1, 1, 1, 0.06)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.85, 0.65, 0.25, 0.25)
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 14.0
-content_margin_bottom = 10.0
-
-[sub_resource type="StyleBoxFlat" id="btn_hover"]
-bg_color = Color(1, 1, 1, 0.12)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.85, 0.65, 0.25, 0.4)
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 14.0
-content_margin_bottom = 10.0
-
-[sub_resource type="StyleBoxFlat" id="btn_pressed"]
-bg_color = Color(1, 1, 1, 0.18)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 14.0
-content_margin_bottom = 10.0
-
 [sub_resource type="StyleBoxFlat" id="primary_normal"]
+content_margin_left = 18.0
+content_margin_top = 14.0
+content_margin_right = 18.0
+content_margin_bottom = 14.0
 bg_color = Color(0.68, 0.42, 0.08, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
-content_margin_left = 18.0
-content_margin_top = 14.0
-content_margin_right = 18.0
-content_margin_bottom = 14.0
-
-[sub_resource type="StyleBoxFlat" id="primary_hover"]
-bg_color = Color(0.82, 0.53, 0.12, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 18.0
-content_margin_top = 14.0
-content_margin_right = 18.0
-content_margin_bottom = 14.0
 
 [sub_resource type="StyleBoxFlat" id="primary_pressed"]
+content_margin_left = 18.0
+content_margin_top = 14.0
+content_margin_right = 18.0
+content_margin_bottom = 14.0
 bg_color = Color(0.52, 0.32, 0.06, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="primary_hover"]
 content_margin_left = 18.0
 content_margin_top = 14.0
 content_margin_right = 18.0
 content_margin_bottom = 14.0
+bg_color = Color(0.82, 0.53, 0.12, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
-[sub_resource type="StyleBoxFlat" id="toggle_pressed"]
-bg_color = Color(0.5, 0.32, 0.08, 0.9)
+[sub_resource type="StyleBoxFlat" id="btn_normal"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0.06)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.65, 0.25, 0.25)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="btn_pressed"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0.18)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="btn_hover"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0.12)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.65, 0.25, 0.4)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="toggle_pressed"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(0.5, 0.32, 0.08, 0.9)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.9, 0.7, 0.3, 0.75)
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 14.0
-content_margin_bottom = 10.0
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="ButtonGroup" id="side_group"]
 
 [sub_resource type="ButtonGroup" id="difficulty_group"]
 
-[node name="Menu" type="Control"]
+[node name="Menu" type="Control" unique_id=671844817]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -121,7 +122,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_menu")
 
-[node name="MainPanel" type="PanelContainer" parent="."]
+[node name="MainPanel" type="PanelContainer" parent="." unique_id=75085333]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -136,186 +137,186 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("panel_style")
 
-[node name="MainMargin" type="MarginContainer" parent="MainPanel"]
+[node name="MainMargin" type="MarginContainer" parent="MainPanel" unique_id=1025643210]
 layout_mode = 2
 theme_override_constants/margin_left = 34
 theme_override_constants/margin_top = 34
 theme_override_constants/margin_right = 34
 theme_override_constants/margin_bottom = 34
 
-[node name="MainVBox" type="VBoxContainer" parent="MainPanel/MainMargin"]
+[node name="MainVBox" type="VBoxContainer" parent="MainPanel/MainMargin" unique_id=1783650341]
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="TitleLabel" type="Label" parent="MainPanel/MainMargin/MainVBox"]
+[node name="TitleLabel" type="Label" parent="MainPanel/MainMargin/MainVBox" unique_id=207525806]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.87, 0.7, 1)
+theme_override_font_sizes/font_size = 42
 text = "KAOOA"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 42
-theme_override_colors/font_color = Color(0.96, 0.87, 0.7, 1)
 
-[node name="SubtitleLabel" type="Label" parent="MainPanel/MainMargin/MainVBox"]
+[node name="SubtitleLabel" type="Label" parent="MainPanel/MainMargin/MainVBox" unique_id=1401979639]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.92, 0.82, 0.55)
+theme_override_font_sizes/font_size = 15
 text = "Crows & Vulture"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(1, 0.92, 0.82, 0.55)
 
-[node name="Divider" type="Control" parent="MainPanel/MainMargin/MainVBox"]
+[node name="Divider" type="Control" parent="MainPanel/MainMargin/MainVBox" unique_id=969753615]
 custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 script = ExtResource("2_motif")
 
-[node name="ModePanel" type="VBoxContainer" parent="MainPanel/MainMargin/MainVBox"]
+[node name="ModePanel" type="VBoxContainer" parent="MainPanel/MainMargin/MainVBox" unique_id=362987598]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="HumanVsHumanButton" type="Button" parent="MainPanel/MainMargin/MainVBox/ModePanel"]
+[node name="HumanVsHumanButton" type="Button" parent="MainPanel/MainMargin/MainVBox/ModePanel" unique_id=1778170745]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("primary_normal")
-theme_override_styles/hover = SubResource("primary_hover")
-theme_override_styles/pressed = SubResource("primary_pressed")
-theme_override_styles/focus = SubResource("primary_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("primary_normal")
+theme_override_styles/pressed = SubResource("primary_pressed")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/focus = SubResource("primary_normal")
 text = "🐦  Human vs Human"
 
-[node name="HumanVsAIButton" type="Button" parent="MainPanel/MainMargin/MainVBox/ModePanel"]
+[node name="HumanVsAIButton" type="Button" parent="MainPanel/MainMargin/MainVBox/ModePanel" unique_id=393969190]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("primary_normal")
-theme_override_styles/hover = SubResource("primary_hover")
-theme_override_styles/pressed = SubResource("primary_pressed")
-theme_override_styles/focus = SubResource("primary_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("primary_normal")
+theme_override_styles/pressed = SubResource("primary_pressed")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/focus = SubResource("primary_normal")
 text = "🦅  Human vs AI"
 
-[node name="QuitButton" type="Button" parent="MainPanel/MainMargin/MainVBox/ModePanel"]
+[node name="QuitButton" type="Button" parent="MainPanel/MainMargin/MainVBox/ModePanel" unique_id=1633691678]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("btn_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 0.75)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("btn_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 text = "Quit"
 
-[node name="AIPanel" type="VBoxContainer" parent="MainPanel/MainMargin/MainVBox"]
+[node name="AIPanel" type="VBoxContainer" parent="MainPanel/MainMargin/MainVBox" unique_id=411141756]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="SideLabel" type="Label" parent="MainPanel/MainMargin/MainVBox/AIPanel"]
+[node name="SideLabel" type="Label" parent="MainPanel/MainMargin/MainVBox/AIPanel" unique_id=584824582]
 layout_mode = 2
-text = "Play as"
-theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(1, 1, 1, 0.55)
+theme_override_font_sizes/font_size = 13
+text = "Play as"
 
-[node name="SideRow" type="HBoxContainer" parent="MainPanel/MainMargin/MainVBox/AIPanel"]
+[node name="SideRow" type="HBoxContainer" parent="MainPanel/MainMargin/MainVBox/AIPanel" unique_id=1204023257]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="SideCrowsButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/SideRow"]
+[node name="SideCrowsButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/SideRow" unique_id=2071992432]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("toggle_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 toggle_mode = true
 button_group = SubResource("side_group")
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("toggle_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 text = "Crows"
 
-[node name="SideVultureButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/SideRow"]
+[node name="SideVultureButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/SideRow" unique_id=2131414560]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("toggle_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 toggle_mode = true
 button_group = SubResource("side_group")
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("toggle_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 text = "Vulture"
 
-[node name="DifficultyLabel" type="Label" parent="MainPanel/MainMargin/MainVBox/AIPanel"]
+[node name="DifficultyLabel" type="Label" parent="MainPanel/MainMargin/MainVBox/AIPanel" unique_id=251626468]
 layout_mode = 2
-text = "Difficulty"
-theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(1, 1, 1, 0.55)
+theme_override_font_sizes/font_size = 13
+text = "Difficulty"
 
-[node name="DifficultyRow" type="HBoxContainer" parent="MainPanel/MainMargin/MainVBox/AIPanel"]
+[node name="DifficultyRow" type="HBoxContainer" parent="MainPanel/MainMargin/MainVBox/AIPanel" unique_id=2094395758]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DifficultyEasyButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/DifficultyRow"]
+[node name="DifficultyEasyButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/DifficultyRow" unique_id=2028790667]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("toggle_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 toggle_mode = true
 button_group = SubResource("difficulty_group")
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("toggle_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 text = "Easy"
 
-[node name="DifficultyNormalButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/DifficultyRow"]
+[node name="DifficultyNormalButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/DifficultyRow" unique_id=1410081716]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("toggle_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 toggle_mode = true
 button_group = SubResource("difficulty_group")
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("toggle_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 text = "Normal"
 
-[node name="DifficultyHardButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/DifficultyRow"]
+[node name="DifficultyHardButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel/DifficultyRow" unique_id=1147133641]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("toggle_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 toggle_mode = true
 button_group = SubResource("difficulty_group")
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("toggle_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 text = "Hard"
 
-[node name="StartButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel"]
+[node name="StartButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel" unique_id=1226366739]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("primary_normal")
-theme_override_styles/hover = SubResource("primary_hover")
-theme_override_styles/pressed = SubResource("primary_pressed")
-theme_override_styles/focus = SubResource("primary_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("primary_normal")
+theme_override_styles/pressed = SubResource("primary_pressed")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/focus = SubResource("primary_normal")
 text = "Start Game"
 
-[node name="BackButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel"]
+[node name="BackButton" type="Button" parent="MainPanel/MainMargin/MainVBox/AIPanel" unique_id=1906514100]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("btn_normal")
-theme_override_styles/hover = SubResource("btn_hover")
-theme_override_styles/pressed = SubResource("btn_pressed")
-theme_override_styles/focus = SubResource("btn_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 0.75)
+theme_override_styles/normal = SubResource("btn_normal")
+theme_override_styles/pressed = SubResource("btn_pressed")
+theme_override_styles/hover = SubResource("btn_hover")
+theme_override_styles/focus = SubResource("btn_normal")
 text = "Back"

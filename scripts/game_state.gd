@@ -17,13 +17,11 @@ enum Turn {
 enum Winner {
 	NONE,
 	CROWS,
-	VULTURE
+	VULTURE,
+	DRAW
 }
 
 
-# Emitted any time the logical state changes (placement, movement,
-# capture, or game over). The Board/UI listen to this instead of
-# polling every frame.
 signal state_changed
 
 
@@ -39,19 +37,24 @@ var vulture_position := ""
 var game_over := false
 var winner: Winner = Winner.NONE
 
+# Used for threefold-repetition detection.
+# Only movement-phase positions are counted.
+var position_history := {}
+
 
 func _init() -> void:
 	for point_id in BoardTopology.CONNECTIONS.keys():
 		board[point_id] = ""
 
 
+# --------------------------------------------------
+# BASIC HELPERS
+# --------------------------------------------------
+
 func is_empty(point_id: String) -> bool:
 	return board.get(point_id, "") == ""
 
 
-# Returns an independent copy of this state. Used by the AI to try
-# out hypothetical moves without touching the live game and without
-# firing state_changed for every dead-end it explores.
 func clone() -> GameState:
 	var copy := GameState.new()
 
@@ -63,9 +66,14 @@ func clone() -> GameState:
 	copy.vulture_position = vulture_position
 	copy.game_over = game_over
 	copy.winner = winner
+	copy.position_history = position_history.duplicate()
 
 	return copy
 
+
+# --------------------------------------------------
+# CROW PLACEMENT
+# --------------------------------------------------
 
 func place_crow(point_id: String) -> bool:
 	if game_over:
@@ -86,22 +94,28 @@ func place_crow(point_id: String) -> bool:
 	board[point_id] = "CROW"
 	crows_placed += 1
 
-	if crows_placed == 1:
-		turn = Turn.VULTURE
+	# After every crow placement, the vulture gets its turn.
+	turn = Turn.VULTURE
 
-	elif crows_placed == 7:
+	# Once the seventh crow is placed, crow placement ends.
+	if crows_placed >= 7:
 		phase = Phase.MOVEMENT
-		turn = Turn.VULTURE
 
-		# The seventh crow may trap the vulture immediately.
-		# Once placement is complete, check whether the vulture
-		# has either a normal move or a legal capture.
+	# If the vulture already exists, the newly placed crow might
+	# have trapped it.
+	if vulture_position != "":
 		check_crow_victory()
 
-	state_changed.emit()
+	if not game_over:
+		register_position()
 
+	state_changed.emit()
 	return true
 
+
+# --------------------------------------------------
+# VULTURE PLACEMENT
+# --------------------------------------------------
 
 func place_vulture(point_id: String) -> bool:
 	if game_over:
@@ -113,7 +127,12 @@ func place_vulture(point_id: String) -> bool:
 	if turn != Turn.VULTURE:
 		return false
 
+	# The vulture may only be placed once.
 	if vulture_position != "":
+		return false
+
+	# The first crow must already have been placed.
+	if crows_placed < 1:
 		return false
 
 	if not is_empty(point_id):
@@ -125,15 +144,15 @@ func place_vulture(point_id: String) -> bool:
 	turn = Turn.CROWS
 
 	state_changed.emit()
-
 	return true
 
 
+# --------------------------------------------------
+# VULTURE NORMAL MOVEMENT
+# --------------------------------------------------
+
 func move_vulture(destination: String) -> bool:
 	if game_over:
-		return false
-
-	if phase != Phase.MOVEMENT:
 		return false
 
 	if turn != Turn.VULTURE:
@@ -145,7 +164,15 @@ func move_vulture(destination: String) -> bool:
 	if not is_empty(destination):
 		return false
 
-	if not BoardTopology.are_connected(vulture_position, destination):
+	# Capture is compulsory.
+	# If even one capture exists, normal movement is illegal.
+	if get_vulture_captures().size() > 0:
+		return false
+
+	if not BoardTopology.are_connected(
+		vulture_position,
+		destination
+	):
 		return false
 
 	var old_position := vulture_position
@@ -156,15 +183,21 @@ func move_vulture(destination: String) -> bool:
 	vulture_position = destination
 	turn = Turn.CROWS
 
-	state_changed.emit()
+	register_position()
 
+	state_changed.emit()
 	return true
 
+
+# --------------------------------------------------
+# VULTURE CAPTURE LOGIC
+# --------------------------------------------------
 
 func get_capture_middle(
 	origin: String,
 	destination: String
 ) -> String:
+
 	for path in BoardTopology.CAPTURE_PATHS:
 		var point_a: String = path[0]
 		var middle: String = path[1]
@@ -181,9 +214,6 @@ func get_capture_middle(
 
 func can_vulture_capture(destination: String) -> bool:
 	if game_over:
-		return false
-
-	if phase != Phase.MOVEMENT:
 		return false
 
 	if turn != Turn.VULTURE:
@@ -227,23 +257,37 @@ func capture_with_vulture(destination: String) -> bool:
 	vulture_position = destination
 	captured_crows += 1
 
+	# Only one crow is captured.
+	# The turn ends immediately after this capture.
+
 	if captured_crows >= 4:
 		game_over = true
 		winner = Winner.VULTURE
+
 		state_changed.emit()
 		return true
 
 	turn = Turn.CROWS
 
-	state_changed.emit()
+	register_position()
 
+	state_changed.emit()
 	return true
 
 
-func move_crow(origin: String, destination: String) -> bool:
+# --------------------------------------------------
+# CROW MOVEMENT
+# --------------------------------------------------
+
+func move_crow(
+	origin: String,
+	destination: String
+) -> bool:
+
 	if game_over:
 		return false
 
+	# Crows cannot move until all seven have been placed.
 	if phase != Phase.MOVEMENT:
 		return false
 
@@ -256,7 +300,10 @@ func move_crow(origin: String, destination: String) -> bool:
 	if not is_empty(destination):
 		return false
 
-	if not BoardTopology.are_connected(origin, destination):
+	if not BoardTopology.are_connected(
+		origin,
+		destination
+	):
 		return false
 
 	board[origin] = ""
@@ -264,24 +311,42 @@ func move_crow(origin: String, destination: String) -> bool:
 
 	turn = Turn.VULTURE
 
+	# A crow move may completely trap the vulture.
 	check_crow_victory()
 
-	state_changed.emit()
+	if not game_over:
+		register_position()
 
+	state_changed.emit()
 	return true
 
 
-func get_vulture_normal_moves() -> Array:
+# --------------------------------------------------
+# VULTURE LEGAL MOVES
+# --------------------------------------------------
+
+func get_vulture_raw_normal_moves() -> Array:
 	var legal_moves := []
 
 	if vulture_position == "":
 		return legal_moves
 
-	for neighbor in BoardTopology.get_neighbors(vulture_position):
+	for neighbor in BoardTopology.get_neighbors(
+		vulture_position
+	):
 		if is_empty(neighbor):
 			legal_moves.append(neighbor)
 
 	return legal_moves
+
+
+func get_vulture_normal_moves() -> Array:
+	# Mandatory capture rule:
+	# normal movement disappears whenever a capture exists.
+	if get_vulture_captures().size() > 0:
+		return []
+
+	return get_vulture_raw_normal_moves()
 
 
 func get_vulture_captures() -> Array:
@@ -291,6 +356,7 @@ func get_vulture_captures() -> Array:
 		return legal_captures
 
 	for destination in board.keys():
+
 		if destination == vulture_position:
 			continue
 
@@ -312,23 +378,27 @@ func get_vulture_captures() -> Array:
 
 
 func has_any_vulture_action() -> bool:
-	if get_vulture_normal_moves().size() > 0:
+	if get_vulture_captures().size() > 0:
 		return true
 
-	if get_vulture_captures().size() > 0:
+	if get_vulture_raw_normal_moves().size() > 0:
 		return true
 
 	return false
 
 
+# --------------------------------------------------
+# CROW VICTORY
+# --------------------------------------------------
+
 func check_crow_victory() -> bool:
 	if game_over:
 		return false
 
-	if phase != Phase.MOVEMENT:
+	if turn != Turn.VULTURE:
 		return false
 
-	if turn != Turn.VULTURE:
+	if vulture_position == "":
 		return false
 
 	if has_any_vulture_action():
@@ -338,3 +408,59 @@ func check_crow_victory() -> bool:
 	winner = Winner.CROWS
 
 	return true
+
+
+# --------------------------------------------------
+# THREEFOLD REPETITION / DRAW
+# --------------------------------------------------
+
+func get_position_key() -> String:
+	var crow_positions := []
+
+	for point_id in board.keys():
+		if board[point_id] == "CROW":
+			crow_positions.append(point_id)
+
+	crow_positions.sort()
+
+	var turn_name := "CROWS"
+
+	if turn == Turn.VULTURE:
+		turn_name = "VULTURE"
+
+	var phase_name := "PLACEMENT"
+
+	if phase == Phase.MOVEMENT:
+		phase_name = "MOVEMENT"
+
+	return "%s|%s|%s|%s|%d|%d" % [
+		phase_name,
+		turn_name,
+		vulture_position,
+		",".join(crow_positions),
+		crows_placed,
+		captured_crows
+	]
+
+
+func register_position() -> void:
+	if game_over:
+		return
+
+	# Repetition is only relevant once normal movement begins.
+	if phase != Phase.MOVEMENT:
+		return
+
+	var key := get_position_key()
+
+	var occurrences: int = position_history.get(
+		key,
+		0
+	)
+
+	occurrences += 1
+	position_history[key] = occurrences
+
+	if occurrences >= 3:
+		game_over = true
+		winner = Winner.DRAW

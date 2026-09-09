@@ -1,26 +1,14 @@
 class_name AIPlayer
 extends RefCounted
 
-# A stateless AI. Every function takes a GameState and hands back
-# either an evaluation score or a chosen action - it never mutates
-# the real game. Board.gd applies whatever action comes back using
-# the exact same GameState methods a human click would use.
-#
-# Scoring convention: positive scores favor the Vulture, negative
-# scores favor the Crows. Whoever is currently "on move" in the
-# state being searched picks the branch that's best for their own
-# side (Vulture maximizes, Crows minimizes) - this falls naturally
-# out of GameState.turn at every ply, including the placement
-# phase's non-alternating turns (crows 2-6 are placed back-to-back).
-
 
 const EASY_RANDOM_CHANCE := 0.35
 
 
-# Picks an action for whichever side is currently on move in `state`.
-# If add_randomness is true (used for Easy difficulty), sometimes
-# ignores the search and plays a random legal action instead, so the
-# AI is beatable.
+# --------------------------------------------------
+# CHOOSE ACTION
+# --------------------------------------------------
+
 static func choose_action(
 	state: GameState,
 	depth: int,
@@ -32,34 +20,72 @@ static func choose_action(
 	if actions.is_empty():
 		return {}
 
-	if add_randomness and randf() < EASY_RANDOM_CHANCE:
-		return actions[randi() % actions.size()]
+	if (
+		add_randomness
+		and randf() < EASY_RANDOM_CHANCE
+	):
+		return actions[
+			randi() % actions.size()
+		]
 
-	var maximizing := state.turn == GameState.Turn.VULTURE
+	var maximizing := (
+		state.turn
+		== GameState.Turn.VULTURE
+	)
 
 	var best_action: Dictionary = actions[0]
-	var best_value: float = -INF if maximizing else INF
+
+	var best_value: float = (
+		-INF
+		if maximizing
+		else INF
+	)
 
 	var alpha := -INF
 	var beta := INF
 
 	for action in actions:
-		var next_state := apply_action(state, action)
-		var value := minimax(next_state, depth - 1, alpha, beta)
+
+		var next_state := apply_action(
+			state,
+			action
+		)
+
+		var value := minimax(
+			next_state,
+			depth - 1,
+			alpha,
+			beta
+		)
 
 		if maximizing:
+
 			if value > best_value:
 				best_value = value
 				best_action = action
-			alpha = max(alpha, value)
+
+			alpha = max(
+				alpha,
+				value
+			)
+
 		else:
+
 			if value < best_value:
 				best_value = value
 				best_action = action
-			beta = min(beta, value)
+
+			beta = min(
+				beta,
+				value
+			)
 
 	return best_action
 
+
+# --------------------------------------------------
+# MINIMAX
+# --------------------------------------------------
 
 static func minimax(
 	state: GameState,
@@ -76,17 +102,38 @@ static func minimax(
 	if actions.is_empty():
 		return evaluate(state)
 
-	var maximizing := state.turn == GameState.Turn.VULTURE
+	var maximizing := (
+		state.turn
+		== GameState.Turn.VULTURE
+	)
 
 	if maximizing:
+
 		var best: float = -INF
 
 		for action in actions:
-			var next_state := apply_action(state, action)
-			var value := minimax(next_state, depth - 1, alpha, beta)
 
-			best = max(best, value)
-			alpha = max(alpha, value)
+			var next_state := apply_action(
+				state,
+				action
+			)
+
+			var value := minimax(
+				next_state,
+				depth - 1,
+				alpha,
+				beta
+			)
+
+			best = max(
+				best,
+				value
+			)
+
+			alpha = max(
+				alpha,
+				value
+			)
 
 			if alpha >= beta:
 				break
@@ -94,14 +141,32 @@ static func minimax(
 		return best
 
 	else:
+
 		var best: float = INF
 
 		for action in actions:
-			var next_state := apply_action(state, action)
-			var value := minimax(next_state, depth - 1, alpha, beta)
 
-			best = min(best, value)
-			beta = min(beta, value)
+			var next_state := apply_action(
+				state,
+				action
+			)
+
+			var value := minimax(
+				next_state,
+				depth - 1,
+				alpha,
+				beta
+			)
+
+			best = min(
+				best,
+				value
+			)
+
+			beta = min(
+				beta,
+				value
+			)
 
 			if alpha >= beta:
 				break
@@ -109,96 +174,201 @@ static func minimax(
 		return best
 
 
-# Positive favors Vulture, negative favors Crows.
-static func evaluate(state: GameState) -> float:
+# --------------------------------------------------
+# EVALUATION
+# --------------------------------------------------
+
+static func evaluate(
+	state: GameState
+) -> float:
+
 	if state.game_over:
-		if state.winner == GameState.Winner.VULTURE:
+
+		if (
+			state.winner
+			== GameState.Winner.VULTURE
+		):
 			return 100000.0
-		elif state.winner == GameState.Winner.CROWS:
+
+		if (
+			state.winner
+			== GameState.Winner.CROWS
+		):
 			return -100000.0
 
+		# Draw.
 		return 0.0
 
 	var score := 0.0
 
-	# Captures are most of the way to winning - weight them heavily.
-	score += state.captured_crows * 300.0
+	# Capturing crows is the vulture's main objective.
+	score += (
+		state.captured_crows
+		* 300.0
+	)
 
-	# The Vulture wants freedom of movement; the Crows want to take
-	# that freedom away, which is how they actually win.
-	var normal_moves := state.get_vulture_normal_moves().size()
-	var captures_available := state.get_vulture_captures().size()
+	# Use raw movement mobility for evaluation.
+	# Mandatory capture should not hide positional freedom
+	# from the heuristic.
+	var normal_moves := (
+		state
+		.get_vulture_raw_normal_moves()
+		.size()
+	)
+
+	var captures_available := (
+		state
+		.get_vulture_captures()
+		.size()
+	)
 
 	score += normal_moves * 6.0
 	score += captures_available * 40.0
 
+	# Being close to immobilisation should strongly favour crows.
+	if normal_moves == 0 and captures_available == 0:
+		score -= 5000.0
+
 	return score
 
 
-# All legal actions for whichever side is currently on move.
-static func generate_actions(state: GameState) -> Array:
+# --------------------------------------------------
+# ACTION GENERATION
+# --------------------------------------------------
+
+static func generate_actions(
+	state: GameState
+) -> Array:
+
 	var actions := []
 
 	if state.game_over:
 		return actions
 
-	if state.phase == GameState.Phase.PLACEMENT:
-		if state.turn == GameState.Turn.CROWS:
+	# ----------------------------------------------
+	# CROWS
+	# ----------------------------------------------
+
+	if state.turn == GameState.Turn.CROWS:
+
+		# During placement, crows can only drop a new crow.
+		if state.phase == GameState.Phase.PLACEMENT:
+
 			for point_id in state.board.keys():
+
 				if state.is_empty(point_id):
+
 					actions.append({
 						"kind": "place_crow",
 						"destination": point_id
 					})
-		else:
-			for point_id in state.board.keys():
-				if state.is_empty(point_id):
+
+			return actions
+
+		# After all seven have been placed,
+		# existing crows may move.
+		for origin in state.board.keys():
+
+			if state.board[origin] != "CROW":
+				continue
+
+			for neighbor in BoardTopology.get_neighbors(
+				origin
+			):
+
+				if state.is_empty(neighbor):
+
 					actions.append({
-						"kind": "place_vulture",
-						"destination": point_id
+						"kind": "move_crow",
+						"origin": origin,
+						"destination": neighbor
 					})
 
-	else:
-		if state.turn == GameState.Turn.VULTURE:
-			for destination in state.get_vulture_normal_moves():
+		return actions
+
+	# ----------------------------------------------
+	# VULTURE
+	# ----------------------------------------------
+
+	# The vulture's very first action is placement.
+	if state.vulture_position == "":
+
+		for point_id in state.board.keys():
+
+			if state.is_empty(point_id):
+
 				actions.append({
-					"kind": "move_vulture",
-					"destination": destination
+					"kind": "place_vulture",
+					"destination": point_id
 				})
 
-			for destination in state.get_vulture_captures():
-				actions.append({
-					"kind": "capture_vulture",
-					"destination": destination
-				})
+		return actions
 
-		else:
-			for origin in state.board.keys():
-				if state.board[origin] == "CROW":
-					for neighbor in BoardTopology.get_neighbors(origin):
-						if state.is_empty(neighbor):
-							actions.append({
-								"kind": "move_crow",
-								"origin": origin,
-								"destination": neighbor
-							})
+	# Once placed, the vulture can move/capture
+	# during BOTH the crow-placement phase
+	# and normal movement phase.
+
+	var captures := state.get_vulture_captures()
+
+	# Capture is compulsory.
+	if captures.size() > 0:
+
+		for destination in captures:
+
+			actions.append({
+				"kind": "capture_vulture",
+				"destination": destination
+			})
+
+		return actions
+
+	for destination in state.get_vulture_normal_moves():
+
+		actions.append({
+			"kind": "move_vulture",
+			"destination": destination
+		})
 
 	return actions
 
 
-static func apply_action(state: GameState, action: Dictionary) -> GameState:
+# --------------------------------------------------
+# SIMULATE ACTION
+# --------------------------------------------------
+
+static func apply_action(
+	state: GameState,
+	action: Dictionary
+) -> GameState:
+
 	var next_state := state.clone()
 
 	match action["kind"]:
+
 		"place_crow":
-			next_state.place_crow(action["destination"])
+			next_state.place_crow(
+				action["destination"]
+			)
+
 		"place_vulture":
-			next_state.place_vulture(action["destination"])
+			next_state.place_vulture(
+				action["destination"]
+			)
+
 		"move_vulture":
-			next_state.move_vulture(action["destination"])
+			next_state.move_vulture(
+				action["destination"]
+			)
+
 		"capture_vulture":
-			next_state.capture_with_vulture(action["destination"])
+			next_state.capture_with_vulture(
+				action["destination"]
+			)
+
 		"move_crow":
-			next_state.move_crow(action["origin"], action["destination"])
+			next_state.move_crow(
+				action["origin"],
+				action["destination"]
+			)
 
 	return next_state
